@@ -51,7 +51,7 @@
 
             <h2>IT Student • Aspiring Developer • Digital Artist</h2>
 
-            <p class="hero-description">
+            <p class="hero-description typing-text">
                 I build websites, applications, and digital projects while
                 exploring software development, networking, and game development.
             </p>
@@ -91,20 +91,20 @@
 
             <div class="about-text">
 
-                <p>
+                <p class="typing-text">
                     I'm an Information Technology student with an interest in
                     software development, web development, networking, game
                     development, and digital art.
                 </p>
 
-                <p>
+                <p class="typing-text">
                     I enjoy turning ideas into working projects and experimenting
                     with different technologies. Building projects helps me
                     strengthen my programming, problem-solving, and technical
                     skills.
                 </p>
 
-                <p>
+                <p class="typing-text">
                     I'm currently focused on expanding my knowledge, creating
                     real-world projects, and gaining experience that will prepare
                     me for a career in the technology industry.
@@ -378,7 +378,7 @@
             <div class="contact-text">
                 <h3>Have a project in mind?</h3>
 
-                <p>
+                <p class="typing-text">
                     I'm always open to learning, collaborating, and working
                     on interesting projects. Feel free to reach out.
                 </p>
@@ -426,6 +426,28 @@
         const themeToggle = document.querySelector('#theme-toggle');
         const savedTheme = localStorage.getItem('portfolio-theme');
         const interactiveCards = document.querySelectorAll('.info-box, .skill-card, .project-card, .contact-card');
+        const typingTexts = document.querySelectorAll('.typing-text');
+
+        function typeText(element, speed = 24) {
+            const fullText = element.textContent.replace(/\s+/g, ' ').trim();
+            let currentIndex = 0;
+
+            element.textContent = '';
+            element.classList.add('is-typing');
+
+            const typeNextCharacter = () => {
+                element.textContent += fullText[currentIndex];
+                currentIndex += 1;
+
+                if (currentIndex < fullText.length) {
+                    window.setTimeout(typeNextCharacter, speed);
+                } else {
+                    element.classList.remove('is-typing');
+                }
+            };
+
+            typeNextCharacter();
+        }
 
         if (savedTheme === 'light') {
             document.documentElement.dataset.theme = 'light';
@@ -440,6 +462,43 @@
             themeToggle.setAttribute('aria-label', isLight ? 'Switch to light theme' : 'Switch to dark theme');
             themeToggle.querySelector('span').textContent = isLight ? '☼' : '☾';
         });
+
+        const scrollSections = document.querySelectorAll('.section');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (reducedMotion) {
+            typingTexts.forEach((text) => {
+                text.textContent = text.textContent.replace(/\s+/g, ' ').trim();
+            });
+        } else {
+            const homeTypingText = document.querySelector('.hero .typing-text');
+            window.setTimeout(() => typeText(homeTypingText), 1200);
+        }
+
+        if (reducedMotion) {
+            scrollSections.forEach((section) => section.classList.add('is-visible'));
+        } else {
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        const sectionTypingTexts = entry.target.querySelectorAll('.typing-text');
+                        sectionTypingTexts.forEach((typingText) => {
+                            if (!typingText.classList.contains('is-typed')) {
+                                typingText.classList.add('is-typed');
+                                typeText(typingText);
+                            }
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            scrollSections.forEach((section) => {
+                section.classList.add('scroll-reveal');
+                sectionObserver.observe(section);
+            });
+        }
 
         if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             interactiveCards.forEach((card) => {
