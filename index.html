@@ -32,6 +32,10 @@
                 <li><a href="#contact">Contact</a></li>
             </ul>
 
+            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme">
+                <span aria-hidden="true">☼</span>
+            </button>
+
         </nav>
     </header>
 
@@ -126,6 +130,12 @@
                     <span>Currently</span>
                     <strong>Student / Developer</strong>
                     <small>Learning • Building • Creating</small>
+                </div>
+
+                <div class="info-box">
+                    <span>Currently Building</span>
+                    <strong>Web & Software Projects</strong>
+                    <small>Improving • Experimenting • Sharing</small>
                 </div>
 
             </div>
@@ -412,6 +422,24 @@
 
     </footer>
 
+    <script>
+        const themeToggle = document.querySelector('#theme-toggle');
+        const savedTheme = localStorage.getItem('portfolio-theme');
+
+        if (savedTheme === 'light') {
+            document.documentElement.dataset.theme = 'light';
+            themeToggle.setAttribute('aria-label', 'Switch to dark theme');
+            themeToggle.querySelector('span').textContent = '☾';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.documentElement.dataset.theme === 'light';
+            document.documentElement.dataset.theme = isLight ? 'dark' : 'light';
+            localStorage.setItem('portfolio-theme', isLight ? 'dark' : 'light');
+            themeToggle.setAttribute('aria-label', isLight ? 'Switch to light theme' : 'Switch to dark theme');
+            themeToggle.querySelector('span').textContent = isLight ? '☼' : '☾';
+        });
+    </script>
 
 </body>
 </html>
