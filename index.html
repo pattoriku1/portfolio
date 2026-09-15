@@ -96,7 +96,7 @@
         <span class="music-status" id="music-status">
             My Song
         </span>
-        <audio id="portfolio-audio" src="music/HANNI.mp3" autoplay></audio>
+        <audio id="portfolio-audio" src="music/HANNI.mp3"></audio>
     </div>
 
 
@@ -507,43 +507,37 @@
             playgroundNote.classList.add('playground-change');
         });
 
-        const musicFile = document.querySelector('#music-file');
         const musicButton = document.querySelector('#music-button');
         const musicStatus = document.querySelector('#music-status');
         const portfolioAudio = document.querySelector('#portfolio-audio');
-        let musicUrl;
-
+        
         musicButton.addEventListener('click', () => {
-            if (portfolioAudio.src) {
-                if (portfolioAudio.paused) {
-                    portfolioAudio.play();
-                } else {
-                    portfolioAudio.pause();
-                }
-                return;
+            if (portfolioAudio.paused) {
+                portfolioAudio.play();
+            } else {
+                portfolioAudio.pause();
             }
-
-            musicFile.click();
         });
-
-        musicFile.addEventListener('change', () => {
-            const selectedFile = musicFile.files[0];
-            if (!selectedFile) return;
-
-            if (musicUrl) URL.revokeObjectURL(musicUrl);
-            musicUrl = URL.createObjectURL(selectedFile);
-            portfolioAudio.src = musicUrl;
-            musicStatus.textContent = selectedFile.name;
-            musicButton.textContent = '▶ Play music';
-        });
-
+        
         portfolioAudio.addEventListener('play', () => {
             musicButton.textContent = '❚❚ Pause music';
         });
-
+        
         portfolioAudio.addEventListener('pause', () => {
             musicButton.textContent = '▶ Play music';
         });
+        
+        window.addEventListener('load', () => {
+            portfolioAudio.play().catch(() => {
+                musicStatus.textContent = 'Click anywhere to play';
+            });
+        });
+        
+        document.addEventListener('click', () => {
+            if (portfolioAudio.paused) {
+                portfolioAudio.play().catch(() => {});
+            }
+        }, { once: true });
 
         const scrollSections = document.querySelectorAll('.section');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
