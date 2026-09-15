@@ -76,7 +76,25 @@
 
         </div>
 
+        <aside class="hero-playground" aria-label="Quote playground">
+            <div class="playground-orbit orbit-one"></div>
+            <div class="playground-orbit orbit-two"></div>
+            <span class="playground-label">A little quote</span>
+            <strong class="playground-mode" id="playground-mode">Keep creating.</strong>
+            <p class="playground-note" id="playground-note">Small ideas can become meaningful projects.</p>
+            <button type="button" class="playground-button" id="playground-button" aria-label="Show another quote">
+                <span aria-hidden="true">↻</span>
+            </button>
+        </aside>
+
     </section>
+
+    <div class="music-player">
+        <input type="file" id="music-file" accept="audio/*" hidden>
+        <button type="button" class="music-button" id="music-button">♫ Add music</button>
+        <span class="music-status" id="music-status">No track selected</span>
+        <audio id="portfolio-audio"></audio>
+    </div>
 
 
     <!-- About -->
@@ -461,6 +479,67 @@
             localStorage.setItem('portfolio-theme', isLight ? 'dark' : 'light');
             themeToggle.setAttribute('aria-label', isLight ? 'Switch to light theme' : 'Switch to dark theme');
             themeToggle.querySelector('span').textContent = isLight ? '☼' : '☾';
+        });
+
+        const playgroundMode = document.querySelector('#playground-mode');
+        const playgroundNote = document.querySelector('#playground-note');
+        const playgroundButton = document.querySelector('#playground-button');
+        const playgroundStates = [
+            ['Learn by building.', 'Every project is a chance to grow.'],
+            ['Stay curious.', 'The best ideas often begin with a question.'],
+            ['Make it meaningful.', 'Good design helps ideas connect.'],
+            ['Keep creating.', 'Small ideas can become meaningful projects.']
+        ];
+        let playgroundIndex = 0;
+
+        playgroundButton.addEventListener('click', () => {
+            playgroundIndex = (playgroundIndex + 1) % playgroundStates.length;
+            const [mode, note] = playgroundStates[playgroundIndex];
+            playgroundMode.classList.remove('playground-change');
+            playgroundNote.classList.remove('playground-change');
+            void playgroundMode.offsetWidth;
+            playgroundMode.textContent = mode;
+            playgroundNote.textContent = note;
+            playgroundMode.classList.add('playground-change');
+            playgroundNote.classList.add('playground-change');
+        });
+
+        const musicFile = document.querySelector('#music-file');
+        const musicButton = document.querySelector('#music-button');
+        const musicStatus = document.querySelector('#music-status');
+        const portfolioAudio = document.querySelector('#portfolio-audio');
+        let musicUrl;
+
+        musicButton.addEventListener('click', () => {
+            if (portfolioAudio.src) {
+                if (portfolioAudio.paused) {
+                    portfolioAudio.play();
+                } else {
+                    portfolioAudio.pause();
+                }
+                return;
+            }
+
+            musicFile.click();
+        });
+
+        musicFile.addEventListener('change', () => {
+            const selectedFile = musicFile.files[0];
+            if (!selectedFile) return;
+
+            if (musicUrl) URL.revokeObjectURL(musicUrl);
+            musicUrl = URL.createObjectURL(selectedFile);
+            portfolioAudio.src = musicUrl;
+            musicStatus.textContent = selectedFile.name;
+            musicButton.textContent = '▶ Play music';
+        });
+
+        portfolioAudio.addEventListener('play', () => {
+            musicButton.textContent = '❚❚ Pause music';
+        });
+
+        portfolioAudio.addEventListener('pause', () => {
+            musicButton.textContent = '▶ Play music';
         });
 
         const scrollSections = document.querySelectorAll('.section');
