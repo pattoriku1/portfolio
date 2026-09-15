@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="intro-stage">
 
     <!-- Navigation -->
     <header>
@@ -494,7 +494,9 @@
             ['Make it meaningful.', 'Good design helps ideas connect.'],
             ['Keep creating.', 'Small ideas can become meaningful projects.']
         ];
-        let playgroundIndex = 0;
+        let playgroundIndex = Math.floor(Math.random() * playgroundStates.length);
+        playgroundMode.textContent = playgroundStates[playgroundIndex][0];
+        playgroundNote.textContent = playgroundStates[playgroundIndex][1];
 
         playgroundButton.addEventListener('click', () => {
             playgroundIndex = (playgroundIndex + 1) % playgroundStates.length;
@@ -540,15 +542,40 @@
         }, { once: true });
 
         const scrollSections = document.querySelectorAll('.section');
+        const homeTypingText = document.querySelector('.hero .typing-text');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function revealHome() {
+            if (!document.body.classList.contains('intro-stage')) {
+                return;
+            }
+
+            document.body.classList.remove('intro-stage');
+            document.body.classList.add('intro-revealing');
+            document.body.classList.add('intro-revealed');
+
+            window.setTimeout(() => {
+                document.body.classList.remove('intro-revealing');
+            }, 1400);
+
+            if (!reducedMotion) {
+                window.setTimeout(() => typeText(homeTypingText), 600);
+            }
+        }
+
+        window.addEventListener('wheel', (event) => {
+            if (event.deltaY > 0 && document.body.classList.contains('intro-stage')) {
+                event.preventDefault();
+                revealHome();
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchstart', revealHome, { passive: true, once: true });
 
         if (reducedMotion) {
             typingTexts.forEach((text) => {
                 text.textContent = text.textContent.replace(/\s+/g, ' ').trim();
             });
-        } else {
-            const homeTypingText = document.querySelector('.hero .typing-text');
-            window.setTimeout(() => typeText(homeTypingText), 1200);
         }
 
         if (reducedMotion) {
@@ -560,6 +587,9 @@
                         entry.target.classList.add('is-visible');
                         const sectionTypingTexts = entry.target.querySelectorAll('.typing-text');
                         sectionTypingTexts.forEach((typingText) => {
+                            if (typingText.closest('.about-text')) {
+                                return;
+                            }
                             if (!typingText.classList.contains('is-typed')) {
                                 typingText.classList.add('is-typed');
                                 typeText(typingText);
