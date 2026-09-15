@@ -119,6 +119,12 @@ header { animation: slide-down 1.2s cubic-bezier(.22, 1, .36, 1) both; }
     margin-bottom: 25px;
 }
 .hero-description { color: var(--dim); font-size: 18px; margin-bottom: 35px; max-width: 620px; }
+.typing-text.is-typing::after {
+    border-right: 2px solid var(--highlight);
+    content: "";
+    margin-left: 3px;
+    animation: typing-caret .8s steps(1) infinite;
+}
 .hero-buttons, .hero-tech, .project-tech { display: flex; flex-wrap: wrap; gap: 10px; }
 .hero-buttons { gap: 15px; }
 .btn {
@@ -143,6 +149,13 @@ header { animation: slide-down 1.2s cubic-bezier(.22, 1, .36, 1) both; }
 }
 
 .section { padding: 120px 20px; }
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(35px);
+}
+.scroll-reveal.is-visible {
+    animation: section-rise .9s cubic-bezier(.22, 1, .36, 1) both;
+}
 .section-title { margin-bottom: 50px; }
 .section-title p { align-items: center; color: var(--highlight); display: flex; gap: 10px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; font-weight: bold; }
 .section-title p::before { background: var(--highlight); content: ""; height: 1px; width: 24px; }
@@ -293,6 +306,15 @@ header { animation: slide-down 1.2s cubic-bezier(.22, 1, .36, 1) both; }
 @keyframes rise-in {
     from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes section-rise {
+    from { opacity: 0; transform: translateY(35px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes typing-caret {
+    50% { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
