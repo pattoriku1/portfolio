@@ -90,12 +90,13 @@
     </section>
 
     <div class="music-player">
+        <div class="music-title">WA-R-R</div>
+        <span class="music-status" id="music-status">HANNI</span>
+    
         <button type="button" class="music-button" id="music-button">
             ▶ Play music
         </button>
-        <span class="music-status" id="music-status">
-            WA-R-R - Cover by HANNI
-        </span>
+    
         <audio id="portfolio-audio" src="music/HANNI.mp3"></audio>
     </div>
 
@@ -529,7 +530,6 @@
         
         window.addEventListener('load', () => {
             portfolioAudio.play().catch(() => {
-                musicStatus.textContent = 'Click anywhere to play';
             });
         });
         
